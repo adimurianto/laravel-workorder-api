@@ -42,4 +42,5 @@ This is an API for the Work Order project built with Laravel.
 - Access Swagger API Docs
 [http://127.0.0.1:8000/api/documentation](http://127.0.0.1:8000/api/documentation/)
 
+<img width="1792" alt="image" src="https://github.com/user-attachments/assets/bf78cc6c-1e72-49e1-8b40-8f199e78e28d" />
 
