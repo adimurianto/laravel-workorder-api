@@ -28,8 +28,11 @@ This is an API for the Work Order project built with Laravel.
 ```bash
   php artisan migrate
   
-  php artisan db:seed
+  php artisan db:seed RolePermissionSeeder
 ```
+
+
+- Import Database from file **db_work_order.sql** for setting up the database manually
 
 
 -  Running Project
