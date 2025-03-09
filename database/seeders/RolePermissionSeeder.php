@@ -16,7 +16,7 @@ class RolePermissionSeeder extends Seeder
         $managerRoleId = DB::table('roles')->insertGetId(['name' => 'Production Manager']);
         $operatorRoleId = DB::table('roles')->insertGetId(['name' => 'Operator']);
 
-        $resources = ['work_orders', 'users', 'reports'];
+        $resources = ['work_orders'];
         $actions = ['create', 'read', 'update', 'delete']; 
 
         $permissionIds = [];
@@ -32,7 +32,6 @@ class RolePermissionSeeder extends Seeder
             ['role_id' => $managerRoleId, 'permission_id' => $permissionIds['work_orders.read']],
             ['role_id' => $managerRoleId, 'permission_id' => $permissionIds['work_orders.update']],
             ['role_id' => $managerRoleId, 'permission_id' => $permissionIds['work_orders.delete']],
-            ['role_id' => $managerRoleId, 'permission_id' => $permissionIds['reports.read']],
         ]);
 
         DB::table('role_permissions')->insert([

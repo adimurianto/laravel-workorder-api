@@ -209,7 +209,7 @@ class AuthController extends Controller
     /**
      * @OA\Get(
      *     path="/api/profile",
-     *     tags={"Authentication"},
+     *     tags={"Users"},
      *     summary="Get user profile",
      *     description="Returns the authenticated user's profile information with role and permissions",
      *     security={{"bearerAuth": {}}},
@@ -250,4 +250,83 @@ class AuthController extends Controller
             'updated_at' => $user->updated_at
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/roles",
+     *     tags={"Users"},
+     *     summary="Get all roles",
+     *     description="Returns all available roles in the system",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Roles retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Admin"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function roles()
+    {
+        $roles = \App\Models\Role::all();
+        
+        return response()->json($roles);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/operators",
+     *     tags={"Users"},
+     *     summary="Get all users with operator role",
+     *     description="Returns all users with operator role",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operator users retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Operator"),
+     *                 @OA\Property(property="email", type="string", format="email", example="operator@example.com"),
+     *                 @OA\Property(property="role", type="string", example="Operator"),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated"
+     *     )
+     * )
+     */
+    public function operatorUsers()
+    {
+        $operatorRole = \App\Models\Role::where('name', 'Operator')->first();
+        
+        if (!$operatorRole) {
+            return response()->json(['message' => 'Operator role not found'], 404);
+        }
+        
+        $operators = User::where('role_id', $operatorRole->id)
+            ->get()
+            ->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role->name,
+                ];
+            });
+            
+        return response()->json($operators);
+    }
 }
+

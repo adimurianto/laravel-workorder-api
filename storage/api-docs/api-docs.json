@@ -270,7 +270,7 @@
         "/api/profile": {
             "get": {
                 "tags": [
-                    "Authentication"
+                    "Users"
                 ],
                 "summary": "Get user profile",
                 "description": "Returns the authenticated user's profile information with role and permissions",
@@ -323,6 +323,166 @@
                     },
                     "401": {
                         "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all roles",
+                "description": "Returns all available roles in the system",
+                "operationId": "775d6c22bcaa8339264e972cc05a8b0d",
+                "responses": {
+                    "200": {
+                        "description": "Roles retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Admin"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/operators": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users with operator role",
+                "description": "Returns all users with operator role",
+                "operationId": "839db25894d1e0c74d9c08ea0b50bf4b",
+                "responses": {
+                    "200": {
+                        "description": "Operator users retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "John Operator"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "operator@example.com"
+                                            },
+                                            "role": {
+                                                "type": "string",
+                                                "example": "Operator"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/stats": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Dashboard Statistics",
+                "operationId": "654e1617f74d2b9e0654ec77620d960b",
+                "parameters": [
+                    {
+                        "name": "assigned_operator_id",
+                        "in": "query",
+                        "description": "ID Operator",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "totalWorkOrders": {
+                                            "type": "integer",
+                                            "example": 25
+                                        },
+                                        "pending": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "inProgress": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "completed": {
+                                            "type": "integer",
+                                            "example": 8
+                                        },
+                                        "canceled": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "500": {
+                        "description": "Server error"
                     }
                 },
                 "security": [
@@ -675,10 +835,6 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "status",
-                                    "assigned_operator_id"
-                                ],
                                 "properties": {
                                     "status": {
                                         "description": "Status of the work order",
@@ -687,8 +843,12 @@
                                             "Pending",
                                             "In Progress",
                                             "Completed",
-                                            "Cancelled"
+                                            "Canceled"
                                         ]
+                                    },
+                                    "assigned_operator_id": {
+                                        "description": "Operator ID",
+                                        "type": "integer"
                                     },
                                     "stage_note": {
                                         "description": "Note for the work order update",
@@ -914,6 +1074,14 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard"
         },
         {
             "name": "Work Orders",

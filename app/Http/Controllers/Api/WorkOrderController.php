@@ -276,8 +276,8 @@ class WorkOrderController extends Controller
      *     @OA\RequestBody(
     *         required=true,
     *         @OA\JsonContent(
-    *             required={"status", "assigned_operator_id"},
-    *             @OA\Property(property="status", type="string", enum={"Pending", "In Progress", "Completed", "Cancelled"}, description="Status of the work order"),
+    *             @OA\Property(property="status", type="string", enum={"Pending", "In Progress", "Completed", "Canceled"}, description="Status of the work order"),
+    *             @OA\Property(property="assigned_operator_id", type="integer", description="Operator ID"),
     *             @OA\Property(property="stage_note", type="string", description="Note for the work order update"),
     *             @OA\Property(property="quantity_done", type="integer", description="Quantity of the product")
     *         )
@@ -325,7 +325,7 @@ class WorkOrderController extends Controller
         $user = User::find($authUser->id);
 
         $validator = Validator::make($request->all(), [
-            'status' => 'string|in:Pending,In Progress,Completed,Cancelled',
+            'status' => 'string|in:Pending,In Progress,Completed,Canceled',
             'assigned_operator_id' => 'exists:users,id',
             'stage_note' => 'string',
             'quantity_done' => 'integer|min:0',
@@ -340,17 +340,6 @@ class WorkOrderController extends Controller
                 'status' => $request->status,
                 'assigned_operator_id' => $request->assigned_operator_id ?? $workOrder->assigned_operator_id,
             ]);
-
-            if ($request->has('status') && $workOrder->status !== $request->status) {
-                $progress = new WorkOrderProgress([
-                    'work_order_id' => $workOrder->id,
-                    'status' => $request->status,
-                    'stage_note' => $request->stage_note ?? null,
-                    'quantity_done' => $request->quantity_done ?? null,
-                    'operator_id' => $authUser->id,
-                ]);
-                $progress->save();
-            }
 
             return response()->json(['message' => 'Work order updated by Production Manager.', 'work_order' => $workOrder]);
         }
